@@ -14,24 +14,33 @@ class _CardData {
   });
 }
 
+typedef OnLikeCallback = void Function(String title, bool isLiked)?;
+
 class _Card extends StatefulWidget {
   final String text;
   final String descriptionText;
   final IconData icon;
   final String? imageUrl;
+  final OnLikeCallback onLike;
 
   const _Card(
     this.text, {
     this.icon = Icons.ac_unit_outlined,
     required this.descriptionText,
     this.imageUrl,
+    this.onLike,
   });
 
-  factory _Card.fromData(_CardData data) => _Card(
+  factory _Card.fromData(
+    _CardData data, {
+    OnLikeCallback onLike,
+  }) =>
+      _Card(
         data.text,
         descriptionText: data.descriptionText,
         icon: data.icon,
         imageUrl: data.imageUrl,
+        onLike: onLike,
       );
 
   @override
@@ -131,9 +140,8 @@ class _CardState extends State<_Card> {
                 ),
                 child: GestureDetector(
                   onTap: () {
-                    setState(() {
-                      isLiked = !isLiked;
-                    });
+                    setState(() => isLiked = !isLiked);
+                    widget.onLike?.call(widget.text, isLiked);
                   },
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 200),
