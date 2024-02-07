@@ -1,19 +1,5 @@
 part of 'home_page.dart';
 
-class _CardData {
-  final String text;
-  final String descriptionText;
-  final IconData icon;
-  final String? imageUrl;
-
-  _CardData(
-    this.text, {
-    required this.descriptionText,
-    this.icon = Icons.ac_unit_outlined,
-    this.imageUrl,
-  });
-}
-
 typedef OnLikeCallback = void Function(String title, bool isLiked)?;
 
 class _Card extends StatefulWidget {
@@ -32,7 +18,7 @@ class _Card extends StatefulWidget {
   });
 
   factory _Card.fromData(
-    _CardData data, {
+    CardData data, {
     OnLikeCallback onLike,
   }) =>
       _Card(

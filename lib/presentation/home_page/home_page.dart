@@ -1,17 +1,20 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_test_app/domain/models/card.dart';
+import 'package:flutter_test_app/presentation/details_page/details_page.dart';
 
 part 'card.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomePageState extends State<HomePage> {
   final Color _color = Colors.orangeAccent;
 
   @override
@@ -32,20 +35,20 @@ class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = [
-      _CardData(
+      CardData(
         'Freeze',
         descriptionText: 'so cold..',
         imageUrl:
             'https://www.skedaddlewildlife.com/wp-content/uploads/2018/09/depositphotos_22425309-stock-photo-a-lonely-raccoon-in-winter.jpg',
       ),
-      _CardData(
+      CardData(
         'Hi',
         descriptionText: 'pretty face',
         icon: Icons.hail,
         imageUrl:
             'https://www.thesprucepets.com/thmb/nKNaS4I586B_H7sEUw9QAXvWM_0=/2121x0/filters:no_upscale():strip_icc()/GettyImages-135630198-5ba7d225c9e77c0050cff91b.jpg',
       ),
-      _CardData(
+      CardData(
         'Orange',
         descriptionText: 'I like autumn',
         icon: Icons.warning_amber,
@@ -59,10 +62,19 @@ class Body extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: data
-              .map((e) => _Card.fromData(
-                    e,
-                    onLike: (String title, bool isLiked) =>
-                        _showSnackBar(context, title, isLiked),
+              .map((data) => GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => DetailsPage(data)),
+                      );
+                    },
+                    child: _Card.fromData(
+                      data,
+                      onLike: (String title, bool isLiked) =>
+                          _showSnackBar(context, title, isLiked),
+                    ),
                   ))
               .toList(),
         ),
