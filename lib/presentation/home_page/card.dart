@@ -45,6 +45,7 @@ class _CardState extends State<_Card> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(16),
+      constraints: const BoxConstraints(minHeight: 160),
       decoration: BoxDecoration(
         color: Colors.white70,
         borderRadius: BorderRadius.circular(20),
@@ -69,10 +70,36 @@ class _CardState extends State<_Card> {
               child: SizedBox(
                 height: double.infinity,
                 width: 120,
-                child: Image.network(
-                  widget.imageUrl ?? '',
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const Placeholder(),
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Image.network(
+                        widget.imageUrl ?? '',
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const Placeholder(),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.orangeAccent,
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(20),
+                            // bo: Radius.circular(20),
+                          ),
+                        ),
+                        padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
+                        child: Text(
+                          'скидка 20%',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -83,11 +110,11 @@ class _CardState extends State<_Card> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.text * 3,
+                      widget.text,
                       style: Theme.of(context).textTheme.headlineLarge,
                     ),
                     Text(
-                      widget.descriptionText * 10,
+                      widget.descriptionText,
                       style: Theme.of(context).textTheme.bodyLarge,
                     )
                   ],
