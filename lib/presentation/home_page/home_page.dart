@@ -61,24 +61,23 @@ class Body extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: data
-              .map((data) => GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => DetailsPage(data)),
-                      );
-                    },
-                    child: _Card.fromData(
-                      data,
-                      onLike: (String title, bool isLiked) =>
-                          _showSnackBar(context, title, isLiked),
-                    ),
-                  ))
-              .toList(),
+          children: data.map((data) {
+            return _Card.fromData(
+              data,
+              onLike: (String title, bool isLiked) =>
+                  _showSnackBar(context, title, isLiked),
+              onTap: () => _navToDetails(context, data),
+            );
+          }).toList(),
         ),
       ),
+    );
+  }
+
+  void _navToDetails(BuildContext context, CardData data) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (context) => DetailsPage(data)),
     );
   }
 
