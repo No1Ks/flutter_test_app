@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_test_app/data/repositories/potter_repository.dart';
 import 'package:flutter_test_app/domain/models/card.dart';
 import 'package:flutter_test_app/presentation/details_page/details_page.dart';
+import 'package:flutter_test_app/presentation/dialogs/show_dialog.dart';
 
 part 'card.dart';
 
@@ -29,46 +31,42 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class Body extends StatelessWidget {
-  const Body({super.key}); // КЛЮЧИ
+class Body extends StatefulWidget {
+  const Body({super.key});
+
+  @override
+  State<Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  late Future<List<CardData>?> data;
+
+  @override
+  void initState() {
+    data = PotterRepository().loadData(onError: (e) => showErrorDialog(context, error: e));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final data = [
-      CardData(
-        'Freeze',
-        descriptionText: 'so cold..',
-        imageUrl:
-            'https://www.skedaddlewildlife.com/wp-content/uploads/2018/09/depositphotos_22425309-stock-photo-a-lonely-raccoon-in-winter.jpg',
-      ),
-      CardData(
-        'Hi',
-        descriptionText: 'pretty face',
-        icon: Icons.hail,
-        imageUrl:
-            'https://www.thesprucepets.com/thmb/nKNaS4I586B_H7sEUw9QAXvWM_0=/2121x0/filters:no_upscale():strip_icc()/GettyImages-135630198-5ba7d225c9e77c0050cff91b.jpg',
-      ),
-      CardData(
-        'Orange',
-        descriptionText: 'I like autumn',
-        icon: Icons.warning_amber,
-        imageUrl:
-            'https://furmanagers.com/wp-content/uploads/2019/11/dreamstime_l_22075357.jpg',
-      ),
-    ];
-
     return Center(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: data.map((data) {
-            return _Card.fromData(
-              data,
-              onLike: (String title, bool isLiked) =>
-                  _showSnackBar(context, title, isLiked),
-              onTap: () => _navToDetails(context, data),
-            );
-          }).toList(),
+      child: FutureBuilder<List<CardData>?>(
+        future: data,
+        builder: (context, snapshot) => SingleChildScrollView(
+          child: snapshot.hasData
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: snapshot.data?.map((data) {
+                        return _Card.fromData(
+                          data,
+                          onLike: (String title, bool isLiked) =>
+                              _showSnackBar(context, title, isLiked),
+                          onTap: () => _navToDetails(context, data),
+                        );
+                      }).toList() ??
+                      [],
+                )
+              : const CircularProgressIndicator(),
         ),
       ),
     );
@@ -85,7 +83,7 @@ class Body extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
-          'Racoon $title ${isLiked ? 'liked!' : 'disliked :('}',
+          'Raccoon $title ${isLiked ? 'liked!' : 'disliked :('}',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         backgroundColor: Colors.orangeAccent,

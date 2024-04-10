@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
         useMaterial3: true,
       ),
-      home: const HomePage(title: 'Racoons are gorgeous'),
+      home: const HomePage(title: 'Raccoons are gorgeous'),
     );
   }
 }
