@@ -80,26 +80,27 @@ class _CardState extends State<_Card> {
                           errorBuilder: (_, __, ___) => const Placeholder(),
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.orangeAccent,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(20),
-                              // bo: Radius.circular(20),
-                            ),
-                          ),
-                          padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
-                          child: Text(
-                            'скидка 20%',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: Colors.black),
-                          ),
-                        ),
-                      ),
+                      /// Если надо включить label
+                      // Align(
+                      //   alignment: Alignment.bottomLeft,
+                      //   child: Container(
+                      //     decoration: const BoxDecoration(
+                      //       color: Colors.orangeAccent,
+                      //       borderRadius: BorderRadius.only(
+                      //         topRight: Radius.circular(20),
+                      //         // bo: Radius.circular(20),
+                      //       ),
+                      //     ),
+                      //     padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
+                      //     child: Text(
+                      //       'скидка 20%',
+                      //       style: Theme.of(context)
+                      //           .textTheme
+                      //           .bodyMedium
+                      //           ?.copyWith(color: Colors.black),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -112,7 +113,7 @@ class _CardState extends State<_Card> {
                     children: [
                       Text(
                         widget.text,
-                        style: Theme.of(context).textTheme.headlineLarge,
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       Text(
                         widget.descriptionText,

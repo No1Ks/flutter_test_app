@@ -17,17 +17,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final Color _color = Colors.orangeAccent;
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: _color,
-        title: Text(widget.title),
-      ),
-      body: const Body(),
-    );
+    return const Scaffold(body: Body());
   }
 }
 
@@ -39,35 +31,58 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  final searchController = TextEditingController();
   late Future<List<CardData>?> data;
+
+  final repo = PotterRepository();
 
   @override
   void initState() {
-    data = PotterRepository().loadData(onError: (e) => showErrorDialog(context, error: e));
+    data = repo.loadData(onError: (e) => showErrorDialog(context, error: e));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: FutureBuilder<List<CardData>?>(
-        future: data,
-        builder: (context, snapshot) => SingleChildScrollView(
-          child: snapshot.hasData
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: snapshot.data?.map((data) {
-                        return _Card.fromData(
-                          data,
-                          onLike: (String title, bool isLiked) =>
-                              _showSnackBar(context, title, isLiked),
-                          onTap: () => _navToDetails(context, data),
-                        );
-                      }).toList() ??
-                      [],
-                )
-              : const CircularProgressIndicator(),
-        ),
+    return Padding(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: CupertinoSearchTextField(
+              controller: searchController,
+              onChanged: (search) {
+                setState(() {
+                  data = repo.loadData(q: search);
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: Center(
+              child: FutureBuilder<List<CardData>?>(
+                future: data,
+                builder: (context, snapshot) => SingleChildScrollView(
+                  child: snapshot.hasData
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: snapshot.data?.map((data) {
+                                return _Card.fromData(
+                                  data,
+                                  onLike: (String title, bool isLiked) =>
+                                      _showSnackBar(context, title, isLiked),
+                                  onTap: () => _navToDetails(context, data),
+                                );
+                              }).toList() ??
+                              [],
+                        )
+                      : const CircularProgressIndicator(),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -83,7 +98,7 @@ class _BodyState extends State<Body> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
-          'Raccoon $title ${isLiked ? 'liked!' : 'disliked :('}',
+          '$title ${isLiked ? 'liked!' : 'disliked :('}',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         backgroundColor: Colors.orangeAccent,

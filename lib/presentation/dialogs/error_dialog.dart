@@ -14,7 +14,9 @@ class ErrorDialog extends StatelessWidget {
           margin: const EdgeInsets.all(36),
           padding: const EdgeInsets.all(20),
           decoration: const BoxDecoration(
-              color: Colors.grey, borderRadius: BorderRadius.all(Radius.circular(10))),
+            color: Colors.grey,
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
