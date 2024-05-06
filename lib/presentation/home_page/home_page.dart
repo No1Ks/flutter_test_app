@@ -1,16 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test_app/data/repositories/potter_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test_app/domain/models/card.dart';
 import 'package:flutter_test_app/presentation/details_page/details_page.dart';
-import 'package:flutter_test_app/presentation/dialogs/show_dialog.dart';
+import 'package:flutter_test_app/presentation/home_page/bloc/bloc.dart';
+import 'package:flutter_test_app/presentation/home_page/bloc/events.dart';
+import 'package:flutter_test_app/presentation/home_page/bloc/state.dart';
 
 part 'card.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-
-  final String title;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -19,27 +19,32 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Body());
+    return const Scaffold(body: _Body());
   }
 }
 
-class Body extends StatefulWidget {
-  const Body({super.key});
+class _Body extends StatefulWidget {
+  const _Body();
 
   @override
-  State<Body> createState() => _BodyState();
+  State<_Body> createState() => _BodyState();
 }
 
-class _BodyState extends State<Body> {
+class _BodyState extends State<_Body> {
   final searchController = TextEditingController();
-  late Future<List<CardData>?> data;
-
-  final repo = PotterRepository();
 
   @override
   void initState() {
-    data = repo.loadData(onError: (e) => showErrorDialog(context, error: e));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeBloc>().add(const HomeLoadDataEvent());
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -53,33 +58,31 @@ class _BodyState extends State<Body> {
             child: CupertinoSearchTextField(
               controller: searchController,
               onChanged: (search) {
-                setState(() {
-                  data = repo.loadData(q: search);
-                });
+                // todo
               },
             ),
           ),
-          Expanded(
-            child: Center(
-              child: FutureBuilder<List<CardData>?>(
-                future: data,
-                builder: (context, snapshot) => SingleChildScrollView(
-                  child: snapshot.hasData
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: snapshot.data?.map((data) {
-                                return _Card.fromData(
+          BlocBuilder<HomeBloc, HomeState>(
+            builder: (context, state) => FutureBuilder<List<CardData>?>(
+              future: state.data,
+              builder: (context, snapshot) => snapshot.hasData
+                  ? Expanded(
+                      child: ListView.builder(
+                        itemCount: snapshot.data?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final data = snapshot.data?[index];
+                          return data != null
+                              ? _Card.fromData(
                                   data,
-                                  onLike: (String title, bool isLiked) =>
+                                  onLike: (title, isLiked) =>
                                       _showSnackBar(context, title, isLiked),
                                   onTap: () => _navToDetails(context, data),
-                                );
-                              }).toList() ??
-                              [],
-                        )
-                      : const CircularProgressIndicator(),
-                ),
-              ),
+                                )
+                              : const SizedBox.shrink();
+                        },
+                      ),
+                    )
+                  : const CircularProgressIndicator(),
             ),
           ),
         ],

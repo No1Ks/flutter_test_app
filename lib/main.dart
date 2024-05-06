@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test_app/data/repositories/potter_repository.dart';
+import 'package:flutter_test_app/presentation/home_page/bloc/bloc.dart';
 import 'package:flutter_test_app/presentation/home_page/home_page.dart';
 
 void main() {
@@ -17,7 +20,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
         useMaterial3: true,
       ),
-      home: const HomePage(title: 'Raccoons are gorgeous'),
+      home: RepositoryProvider<PotterRepository>(
+        lazy: true,
+        create: (_) => PotterRepository(),
+        child: BlocProvider<HomeBloc>(
+          lazy: false,
+          create: (context) => HomeBloc(context.read<PotterRepository>()),
+          child: const HomePage(),
+        ),
+      ),
     );
   }
 }
