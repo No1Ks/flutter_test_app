@@ -58,7 +58,7 @@ class _BodyState extends State<_Body> {
             child: CupertinoSearchTextField(
               controller: searchController,
               onChanged: (search) {
-                // todo
+                context.read<HomeBloc>().add(HomeLoadDataEvent(search: search));
               },
             ),
           ),
@@ -68,6 +68,7 @@ class _BodyState extends State<_Body> {
               builder: (context, snapshot) => snapshot.hasData
                   ? Expanded(
                       child: ListView.builder(
+                        padding: EdgeInsets.zero,
                         itemCount: snapshot.data?.length ?? 0,
                         itemBuilder: (context, index) {
                           final data = snapshot.data?[index];

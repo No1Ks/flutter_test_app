@@ -11,6 +11,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   void _onLoadData(HomeLoadDataEvent event, Emitter<HomeState> emit) {
-    emit(state.copyWith(data: repo.loadData()));
+    emit(state.copyWith(data: repo.loadData(q: event.search)));
   }
 }
