@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test_app/components/utils/debounce.dart';
 import 'package:flutter_test_app/domain/models/card.dart';
 import 'package:flutter_test_app/presentation/details_page/details_page.dart';
 import 'package:flutter_test_app/presentation/home_page/bloc/bloc.dart';
@@ -58,7 +59,7 @@ class _BodyState extends State<_Body> {
             child: CupertinoSearchTextField(
               controller: searchController,
               onChanged: (search) {
-                context.read<HomeBloc>().add(HomeLoadDataEvent(search: search));
+                Debounce.run(() => context.read<HomeBloc>().add(HomeLoadDataEvent(search: search)));
               },
             ),
           ),
@@ -66,25 +67,34 @@ class _BodyState extends State<_Body> {
             builder: (context, state) => state.isLoading
                 ? const CircularProgressIndicator()
                 : Expanded(
-                    child: ListView.builder(
-                      padding: EdgeInsets.zero,
-                      itemCount: state.data?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final data = state.data?[index];
-                        return data != null
-                            ? _Card.fromData(
-                                data,
-                                onLike: (title, isLiked) => _showSnackBar(context, title, isLiked),
-                                onTap: () => _navToDetails(context, data),
-                              )
-                            : const SizedBox.shrink();
-                      },
+                    child: RefreshIndicator(
+                      onRefresh: _onRefresh,
+                      child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: state.data?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final data = state.data?[index];
+                          return data != null
+                              ? _Card.fromData(
+                                  data,
+                                  onLike: (title, isLiked) =>
+                                      _showSnackBar(context, title, isLiked),
+                                  onTap: () => _navToDetails(context, data),
+                                )
+                              : const SizedBox.shrink();
+                        },
+                      ),
                     ),
                   ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _onRefresh() {
+    context.read<HomeBloc>().add(HomeLoadDataEvent(search: searchController.text));
+    return Future.value(null);
   }
 
   void _navToDetails(BuildContext context, CardData data) {
