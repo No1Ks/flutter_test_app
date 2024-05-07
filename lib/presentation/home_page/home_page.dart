@@ -71,9 +71,9 @@ class _BodyState extends State<_Body> {
                       onRefresh: _onRefresh,
                       child: ListView.builder(
                         padding: EdgeInsets.zero,
-                        itemCount: state.data?.length ?? 0,
+                        itemCount: state.data?.data?.length ?? 0,
                         itemBuilder: (context, index) {
-                          final data = state.data?[index];
+                          final data = state.data?.data?[index];
                           return data != null
                               ? _Card.fromData(
                                   data,

@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_test_app/domain/models/card.dart';
+import 'package:flutter_test_app/domain/models/home.dart';
 
 class HomeState extends Equatable {
-  final List<CardData>? data;
+  final HomeData? data;
   final bool isLoading;
 
   const HomeState({
@@ -11,7 +11,7 @@ class HomeState extends Equatable {
   });
 
   HomeState copyWith({
-    List<CardData>? data,
+    HomeData? data,
     bool? isLoading,
   }) =>
       HomeState(
