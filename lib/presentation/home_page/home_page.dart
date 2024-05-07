@@ -33,18 +33,36 @@ class _Body extends StatefulWidget {
 
 class _BodyState extends State<_Body> {
   final searchController = TextEditingController();
+  final scrollController = ScrollController();
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomeBloc>().add(const HomeLoadDataEvent());
     });
+
+    scrollController.addListener(_onNextPageListener);
+
     super.initState();
+  }
+
+  void _onNextPageListener() {
+    if (scrollController.offset > scrollController.position.maxScrollExtent) {
+      // preventing multiple pagination request on multiple swipes
+      final bloc = context.read<HomeBloc>();
+      if (!bloc.state.isPaginationLoading) {
+        bloc.add(HomeLoadDataEvent(
+          search: searchController.text,
+          nextPage: bloc.state.data?.nextPage,
+        ));
+      }
+    }
   }
 
   @override
   void dispose() {
     searchController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -70,6 +88,7 @@ class _BodyState extends State<_Body> {
                     child: RefreshIndicator(
                       onRefresh: _onRefresh,
                       child: ListView.builder(
+                        controller: scrollController,
                         padding: EdgeInsets.zero,
                         itemCount: state.data?.data?.length ?? 0,
                         itemBuilder: (context, index) {
@@ -86,6 +105,11 @@ class _BodyState extends State<_Body> {
                       ),
                     ),
                   ),
+          ),
+          BlocBuilder<HomeBloc, HomeState>(
+            builder: (context, state) => state.isPaginationLoading
+                ? const CircularProgressIndicator()
+                : const SizedBox.shrink(),
           ),
         ],
       ),

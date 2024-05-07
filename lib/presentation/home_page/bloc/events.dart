@@ -4,6 +4,7 @@ abstract class HomeEvent {
 
 class HomeLoadDataEvent extends HomeEvent {
   final String? search;
+  final int? nextPage;
 
-  const HomeLoadDataEvent({this.search});
+  const HomeLoadDataEvent({this.search, this.nextPage});
 }

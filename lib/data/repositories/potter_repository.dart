@@ -26,13 +26,11 @@ class PotterRepository extends ApiInterface {
 
       final Response<dynamic> response = await _dio.get<Map<dynamic, dynamic>>(
         url,
-        queryParameters: q != null
-            ? {
-                'filter[name_cont]': q,
-                'page[number]': page,
-                'page[size]': pageSize,
-              }
-            : null,
+        queryParameters: {
+          'filter[name_cont]': q,
+          'page[number]': page,
+          'page[size]': pageSize,
+        },
       );
 
       final CharactersDto dto = CharactersDto.fromJson(response.data as Map<String, dynamic>);
