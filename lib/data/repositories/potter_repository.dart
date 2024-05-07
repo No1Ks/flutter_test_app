@@ -37,7 +37,7 @@ class PotterRepository extends ApiInterface {
       final HomeData data = dto.toDomain();
       return data;
     } on DioException catch (e) {
-      onError?.call(e.response?.statusMessage);
+      onError?.call(e.error?.toString());
       return null;
     }
   }

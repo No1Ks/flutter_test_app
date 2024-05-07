@@ -82,29 +82,34 @@ class _BodyState extends State<_Body> {
             ),
           ),
           BlocBuilder<HomeBloc, HomeState>(
-            builder: (context, state) => state.isLoading
-                ? const CircularProgressIndicator()
-                : Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: _onRefresh,
-                      child: ListView.builder(
-                        controller: scrollController,
-                        padding: EdgeInsets.zero,
-                        itemCount: state.data?.data?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          final data = state.data?.data?[index];
-                          return data != null
-                              ? _Card.fromData(
-                                  data,
-                                  onLike: (title, isLiked) =>
-                                      _showSnackBar(context, title, isLiked),
-                                  onTap: () => _navToDetails(context, data),
-                                )
-                              : const SizedBox.shrink();
-                        },
+            builder: (context, state) => state.error != null
+                ? Text(
+                    state.error ?? '',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.red),
+                  )
+                : state.isLoading
+                    ? const CircularProgressIndicator()
+                    : Expanded(
+                        child: RefreshIndicator(
+                          onRefresh: _onRefresh,
+                          child: ListView.builder(
+                            controller: scrollController,
+                            padding: EdgeInsets.zero,
+                            itemCount: state.data?.data?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              final data = state.data?.data?[index];
+                              return data != null
+                                  ? _Card.fromData(
+                                      data,
+                                      onLike: (title, isLiked) =>
+                                          _showSnackBar(context, title, isLiked),
+                                      onTap: () => _navToDetails(context, data),
+                                    )
+                                  : const SizedBox.shrink();
+                            },
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
           ),
           BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) => state.isPaginationLoading

@@ -21,6 +21,8 @@ dependencies:
   equatable: ^2.0.5
   flutter_bloc: ^8.1.5
 
+  copy_with_extension_gen: ^5.0.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

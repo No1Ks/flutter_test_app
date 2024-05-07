@@ -17,9 +17,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(state.copyWith(isPaginationLoading: true));
     }
 
+    String? error;
+
     final data = await repo.loadData(
       q: event.search,
       page: event.nextPage ?? 1,
+      onError: (e) => error = e,
     );
 
     if (event.nextPage != null) {
@@ -30,6 +33,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       isLoading: false,
       isPaginationLoading: false,
       data: data,
+      error: error,
     ));
   }
 }
