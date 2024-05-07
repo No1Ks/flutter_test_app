@@ -63,28 +63,24 @@ class _BodyState extends State<_Body> {
             ),
           ),
           BlocBuilder<HomeBloc, HomeState>(
-            builder: (context, state) => FutureBuilder<List<CardData>?>(
-              future: state.data,
-              builder: (context, snapshot) => snapshot.hasData
-                  ? Expanded(
-                      child: ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: snapshot.data?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          final data = snapshot.data?[index];
-                          return data != null
-                              ? _Card.fromData(
-                                  data,
-                                  onLike: (title, isLiked) =>
-                                      _showSnackBar(context, title, isLiked),
-                                  onTap: () => _navToDetails(context, data),
-                                )
-                              : const SizedBox.shrink();
-                        },
-                      ),
-                    )
-                  : const CircularProgressIndicator(),
-            ),
+            builder: (context, state) => state.isLoading
+                ? const CircularProgressIndicator()
+                : Expanded(
+                    child: ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount: state.data?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final data = state.data?[index];
+                        return data != null
+                            ? _Card.fromData(
+                                data,
+                                onLike: (title, isLiked) => _showSnackBar(context, title, isLiked),
+                                onTap: () => _navToDetails(context, data),
+                              )
+                            : const SizedBox.shrink();
+                      },
+                    ),
+                  ),
           ),
         ],
       ),

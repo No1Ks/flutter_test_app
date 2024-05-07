@@ -80,6 +80,7 @@ class _CardState extends State<_Card> {
                           errorBuilder: (_, __, ___) => const Placeholder(),
                         ),
                       ),
+
                       /// Если надо включить label
                       // Align(
                       //   alignment: Alignment.bottomLeft,
