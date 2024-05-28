@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test_app/components/utils/debounce.dart';
 import 'package:flutter_test_app/domain/models/card.dart';
+import 'package:flutter_test_app/presentation/common/svg_objects.dart';
 import 'package:flutter_test_app/presentation/details_page/details_page.dart';
 import 'package:flutter_test_app/presentation/home_page/bloc/bloc.dart';
 import 'package:flutter_test_app/presentation/home_page/bloc/events.dart';
@@ -37,6 +38,8 @@ class _BodyState extends State<_Body> {
 
   @override
   void initState() {
+    SvgObjects.init();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomeBloc>().add(const HomeLoadDataEvent());
     });
