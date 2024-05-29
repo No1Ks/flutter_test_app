@@ -9,6 +9,9 @@ import 'package:flutter_test_app/presentation/details_page/details_page.dart';
 import 'package:flutter_test_app/presentation/home_page/bloc/bloc.dart';
 import 'package:flutter_test_app/presentation/home_page/bloc/events.dart';
 import 'package:flutter_test_app/presentation/home_page/bloc/state.dart';
+import 'package:flutter_test_app/presentation/locale_bloc/locale_bloc.dart';
+import 'package:flutter_test_app/presentation/locale_bloc/locale_events.dart';
+import 'package:flutter_test_app/presentation/locale_bloc/locale_state.dart';
 
 part 'card.dart';
 
@@ -76,15 +79,39 @@ class _BodyState extends State<_Body> {
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: CupertinoSearchTextField(
-              controller: searchController,
-              placeholder: context.locale.search,
-              onChanged: (search) {
-                Debounce.run(() => context.read<HomeBloc>().add(HomeLoadDataEvent(search: search)));
-              },
-            ),
+          Row(
+            children: [
+              Expanded(
+                flex: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: CupertinoSearchTextField(
+                    controller: searchController,
+                    placeholder: context.locale.search,
+                    onChanged: (search) {
+                      Debounce.run(
+                          () => context.read<HomeBloc>().add(HomeLoadDataEvent(search: search)));
+                    },
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () => context.read<LocaleBloc>().add(const ChangeLocaleEvent()),
+                child: SizedBox.square(
+                  dimension: 50,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: BlocBuilder<LocaleBloc, LocaleState>(
+                      builder: (context, state) {
+                        return state.currentLocale.languageCode == 'ru'
+                            ? const SvgRu()
+                            : const SvgUk();
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) => state.error != null
