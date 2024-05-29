@@ -9,6 +9,9 @@ import 'package:flutter_test_app/presentation/details_page/details_page.dart';
 import 'package:flutter_test_app/presentation/home_page/bloc/bloc.dart';
 import 'package:flutter_test_app/presentation/home_page/bloc/events.dart';
 import 'package:flutter_test_app/presentation/home_page/bloc/state.dart';
+import 'package:flutter_test_app/presentation/like_bloc/like_bloc.dart';
+import 'package:flutter_test_app/presentation/like_bloc/like_event.dart';
+import 'package:flutter_test_app/presentation/like_bloc/like_state.dart';
 import 'package:flutter_test_app/presentation/locale_bloc/locale_bloc.dart';
 import 'package:flutter_test_app/presentation/locale_bloc/locale_events.dart';
 import 'package:flutter_test_app/presentation/locale_bloc/locale_state.dart';
@@ -46,6 +49,7 @@ class _BodyState extends State<_Body> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomeBloc>().add(const HomeLoadDataEvent());
+      context.read<LikeBloc>().add(const LoadLikesEvent());
     });
 
     scrollController.addListener(_onNextPageListener);
@@ -121,26 +125,30 @@ class _BodyState extends State<_Body> {
                   )
                 : state.isLoading
                     ? const CircularProgressIndicator()
-                    : Expanded(
-                        child: RefreshIndicator(
-                          onRefresh: _onRefresh,
-                          child: ListView.builder(
-                            controller: scrollController,
-                            padding: EdgeInsets.zero,
-                            itemCount: state.data?.data?.length ?? 0,
-                            itemBuilder: (context, index) {
-                              final data = state.data?.data?[index];
-                              return data != null
-                                  ? _Card.fromData(
-                                      data,
-                                      onLike: (title, isLiked) =>
-                                          _showSnackBar(context, title, isLiked),
-                                      onTap: () => _navToDetails(context, data),
-                                    )
-                                  : const SizedBox.shrink();
-                            },
-                          ),
-                        ),
+                    : BlocBuilder<LikeBloc, LikeState>(
+                        builder: (context, likeState) {
+                          return Expanded(
+                            child: RefreshIndicator(
+                              onRefresh: _onRefresh,
+                              child: ListView.builder(
+                                controller: scrollController,
+                                padding: EdgeInsets.zero,
+                                itemCount: state.data?.data?.length ?? 0,
+                                itemBuilder: (context, index) {
+                                  final data = state.data?.data?[index];
+                                  return data != null
+                                      ? _Card.fromData(
+                                          data,
+                                          onLike: _onLike,
+                                          isLiked: likeState.likedIds?.contains(data.id) == true,
+                                          onTap: () => _navToDetails(context, data),
+                                        )
+                                      : const SizedBox.shrink();
+                                },
+                              ),
+                            ),
+                          );
+                        },
                       ),
           ),
           BlocBuilder<HomeBloc, HomeState>(
@@ -163,6 +171,13 @@ class _BodyState extends State<_Body> {
       context,
       CupertinoPageRoute(builder: (context) => DetailsPage(data)),
     );
+  }
+
+  void _onLike(String? id, String title, bool isLiked) {
+    if (id != null) {
+      context.read<LikeBloc>().add(ChangeLikeEvent(id));
+      _showSnackBar(context, title, !isLiked);
+    }
   }
 
   void _showSnackBar(BuildContext context, String title, bool isLiked) {

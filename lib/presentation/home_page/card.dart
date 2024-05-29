@@ -1,14 +1,16 @@
 part of 'home_page.dart';
 
-typedef OnLikeCallback = void Function(String title, bool isLiked)?;
+typedef OnLikeCallback = void Function(String? id, String title, bool isLiked)?;
 
-class _Card extends StatefulWidget {
+class _Card extends StatelessWidget {
   final String text;
   final String descriptionText;
   final IconData icon;
   final String? imageUrl;
   final OnLikeCallback onLike;
   final VoidCallback? onTap;
+  final String? id;
+  final bool isLiked;
 
   const _Card(
     this.text, {
@@ -17,12 +19,15 @@ class _Card extends StatefulWidget {
     this.imageUrl,
     this.onLike,
     this.onTap,
+    this.id,
+    this.isLiked = false,
   });
 
   factory _Card.fromData(
     CardData data, {
     OnLikeCallback onLike,
     VoidCallback? onTap,
+    bool isLiked = false,
   }) =>
       _Card(
         data.text,
@@ -31,19 +36,14 @@ class _Card extends StatefulWidget {
         imageUrl: data.imageUrl,
         onLike: onLike,
         onTap: onTap,
+        isLiked: isLiked,
+        id: data.id,
       );
-
-  @override
-  State<_Card> createState() => _CardState();
-}
-
-class _CardState extends State<_Card> {
-  bool isLiked = false;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: onTap,
       child: Container(
         margin: const EdgeInsets.all(16),
         constraints: const BoxConstraints(minHeight: 160),
@@ -75,33 +75,11 @@ class _CardState extends State<_Card> {
                     children: [
                       Positioned.fill(
                         child: Image.network(
-                          widget.imageUrl ?? '',
+                          imageUrl ?? '',
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) => const Placeholder(),
                         ),
                       ),
-
-                      /// Если надо включить label
-                      // Align(
-                      //   alignment: Alignment.bottomLeft,
-                      //   child: Container(
-                      //     decoration: const BoxDecoration(
-                      //       color: Colors.orangeAccent,
-                      //       borderRadius: BorderRadius.only(
-                      //         topRight: Radius.circular(20),
-                      //         // bo: Radius.circular(20),
-                      //       ),
-                      //     ),
-                      //     padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
-                      //     child: Text(
-                      //       'скидка 20%',
-                      //       style: Theme.of(context)
-                      //           .textTheme
-                      //           .bodyMedium
-                      //           ?.copyWith(color: Colors.black),
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
@@ -113,11 +91,11 @@ class _CardState extends State<_Card> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.text,
+                        text,
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       Text(
-                        widget.descriptionText,
+                        descriptionText,
                         style: Theme.of(context).textTheme.bodyLarge,
                       )
                     ],
@@ -127,16 +105,9 @@ class _CardState extends State<_Card> {
               Align(
                 alignment: Alignment.bottomRight,
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 8,
-                    right: 16,
-                    bottom: 16,
-                  ),
+                  padding: const EdgeInsets.only(left: 8, right: 16, bottom: 16),
                   child: GestureDetector(
-                    onTap: () {
-                      setState(() => isLiked = !isLiked);
-                      widget.onLike?.call(widget.text, isLiked);
-                    },
+                    onTap: () => onLike?.call(id, text, isLiked),
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),
                       child: isLiked

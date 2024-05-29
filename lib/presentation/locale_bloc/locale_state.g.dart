@@ -27,8 +27,7 @@ class _$LocaleStateCWProxyImpl implements _$LocaleStateCWProxy {
   final LocaleState _value;
 
   @override
-  LocaleState currentLocale(Locale currentLocale) =>
-      this(currentLocale: currentLocale);
+  LocaleState currentLocale(Locale currentLocale) => this(currentLocale: currentLocale);
 
   @override
 
@@ -42,11 +41,10 @@ class _$LocaleStateCWProxyImpl implements _$LocaleStateCWProxy {
     Object? currentLocale = const $CopyWithPlaceholder(),
   }) {
     return LocaleState(
-      currentLocale:
-          currentLocale == const $CopyWithPlaceholder() || currentLocale == null
-              ? _value.currentLocale
-              // ignore: cast_nullable_to_non_nullable
-              : currentLocale as Locale,
+      currentLocale: currentLocale == const $CopyWithPlaceholder() || currentLocale == null
+          ? _value.currentLocale
+          // ignore: cast_nullable_to_non_nullable
+          : currentLocale as Locale,
     );
   }
 }

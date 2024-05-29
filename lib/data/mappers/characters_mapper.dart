@@ -17,6 +17,7 @@ extension CharacterDataDtoToModel on CharacterDataDto {
         attributes?.name ?? 'UNKNOWN',
         imageUrl: attributes?.image ?? _imagePlaceholder,
         descriptionText: _makeDescriptionText(attributes?.born, attributes?.died),
+        id: id,
       );
 
   String _makeDescriptionText(String? born, String? died) {

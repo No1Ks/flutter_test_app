@@ -72,8 +72,7 @@ class _$HomeStateCWProxyImpl implements _$HomeStateCWProxy {
           // ignore: cast_nullable_to_non_nullable
           : isLoading as bool,
       isPaginationLoading:
-          isPaginationLoading == const $CopyWithPlaceholder() ||
-                  isPaginationLoading == null
+          isPaginationLoading == const $CopyWithPlaceholder() || isPaginationLoading == null
               ? _value.isPaginationLoading
               // ignore: cast_nullable_to_non_nullable
               : isPaginationLoading as bool,
