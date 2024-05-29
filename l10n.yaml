@@ -1,0 +1,6 @@
+arb-dir: l10n
+template-arb-file: app_ru.arb
+output-localization-file: app_locale.dart
+output-dir: lib/components/locale/l10n
+output-class: AppLocale
+synthetic-package: false

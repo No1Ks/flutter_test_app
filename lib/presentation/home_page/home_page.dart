@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test_app/components/extensions/context_x.dart';
 import 'package:flutter_test_app/components/utils/debounce.dart';
 import 'package:flutter_test_app/domain/models/card.dart';
 import 'package:flutter_test_app/presentation/common/svg_objects.dart';
@@ -79,6 +80,7 @@ class _BodyState extends State<_Body> {
             padding: const EdgeInsets.all(12),
             child: CupertinoSearchTextField(
               controller: searchController,
+              placeholder: context.locale.search,
               onChanged: (search) {
                 Debounce.run(() => context.read<HomeBloc>().add(HomeLoadDataEvent(search: search)));
               },
@@ -140,7 +142,7 @@ class _BodyState extends State<_Body> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
-          '$title ${isLiked ? 'liked!' : 'disliked :('}',
+          '$title ${isLiked ? context.locale.liked : context.locale.disliked}',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         backgroundColor: Colors.orangeAccent,

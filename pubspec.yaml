@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Виджеты
   cupertino_icons: ^1.0.2
   flutter_svg: 2.0.7
 
@@ -21,8 +22,12 @@ dependencies:
   # BLoC
   equatable: ^2.0.5
   flutter_bloc: ^8.1.5
-
   copy_with_extension_gen: ^5.0.4
+
+  # Localization
+  flutter_localizations:
+    sdk: flutter
+  intl: 0.18.1
 
 dev_dependencies:
   flutter_test:
@@ -44,7 +49,9 @@ flutter_icons:
   min_sdk_android: 21
 
 flutter:
+  generate: true
+
   uses-material-design: true
 
   assets:
-    - assets/svg
+    - assets/svg/

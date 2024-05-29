@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test_app/components/locale/l10n/app_locale.dart';
 import 'package:flutter_test_app/data/repositories/potter_repository.dart';
 import 'package:flutter_test_app/presentation/home_page/bloc/bloc.dart';
 import 'package:flutter_test_app/presentation/home_page/home_page.dart';
@@ -15,6 +16,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      localizationsDelegates: AppLocale.localizationsDelegates,
+      supportedLocales: AppLocale.supportedLocales,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
